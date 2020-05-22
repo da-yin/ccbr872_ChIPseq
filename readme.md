@@ -4,7 +4,7 @@ interSummit_plotter for transcription factor binding sites based on ChIP-seq dat
 
 Data source
 -----------
-Gene Transcription Regulation Database (GTRD) is the most complete collection of uniformly processed ChIP-seq data to identify transcription factor binding sites for human and mouse.
+Gene Transcription Regulation Database (GTRD) is a collection of uniformly processed ChIP-seq data to identify transcription factor binding sites for human and mouse.
 
 
 Shiny app
@@ -20,15 +20,15 @@ Usage
 - Example datasets is in *_intersummit.txt files. 
 - Complete datasets (290,000 files) at biowulf.nih.gov:/data/CCBR_Pipeliner/db/PipeDB/db/GTRD/
 - Input
-  - Pair A:
-    - gene1: transcription factor1
-    - gene2: transcription factor2
-  - Pair B:
-    - gene3: transcription factor3
-    - gene4: transcription factor4
+  - Pair 1:
+    - gene1: transcription factor A
+    - gene2: transcription factor B
+  - Pair 2:
+    - gene3: transcription factor A
+    - gene4: transcription factor B
 - Output
   - boxplot
   - densityplot
-  - statistical test
+  - statistical test (Kolmogorov–Smirnov test, is a nonparametric test of the equality of one-dimensional probability distributions)
 
-![workflow chart](https://github.com/da-yin/ccbr872_ChIPseq/UI.PNG)
+![workflow chart](https://github.com/da-yin/ccbr872_ChIPseq/blob/master/UI.PNG)
