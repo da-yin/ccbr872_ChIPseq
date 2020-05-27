@@ -17,7 +17,7 @@ This allows us to visualize and test if candidate transcription factors might be
 Usage
 -----------
 
-- Example datasets is in *_intersummit.txt files. 
+- Example datasets is in /rawdata/*.intersummit_distance.txt files. 
 - Complete datasets (290,000 files) at biowulf.nih.gov:/data/CCBR_Pipeliner/db/PipeDB/db/GTRD/
 - Input
   - Pair 1:
