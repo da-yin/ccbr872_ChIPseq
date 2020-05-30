@@ -31,4 +31,4 @@ Usage
   - densityplot
   - statistical test (Kolmogorov–Smirnov test, is a nonparametric test of the equality of one-dimensional probability distributions)
 
-![workflow chart](https://github.com/da-yin/ccbr872_ChIPseq/blob/master/UI.PNG)
+![workflow chart](https://github.com/da-yin/ccbr872_ChIPseq/blob/master/UI3_edited.png)
