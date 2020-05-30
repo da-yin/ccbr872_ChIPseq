@@ -8,15 +8,15 @@ file_suffix = '.intersummit_distance.txt'
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
+    
     # Application title
     titlePanel("Intersummit Distance"),
     # 
     # tags$head(
     #     tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/jQuery.print/1.6.0/jQuery.print.min.js")
     # ),
-
-
+    
+    
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
@@ -37,10 +37,10 @@ ui <- fluidPage(
             #actionButton("statsButton", "generate stats"),
             br(),
             br(),
-           # actionButton("print", "Print", onclick = "$('#textarea').print();")
+            # actionButton("print", "Print", onclick = "$('#textarea').print();")
         ),
-
-
+        
+        
         # Show a plot of the generated distribution
         mainPanel(
             plotOutput("boxplots"),
@@ -54,8 +54,8 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-
+    
+    
     get_genes <- eventReactive(input$boxplotButton, {
         # Validation. All 4 genes must be typed
         # It also validates if the files exist and they're readable
@@ -65,7 +65,7 @@ server <- function(input, output) {
             need(input$gene3 != "", "Please type a valid gene 3"),
             need(input$gene4 != "", "Please type a valid gene 4"),
             need(try(read.table(paste0(data_path, input$gene1,'_', input$gene2, file_suffix), sep='\t', header=FALSE)), 
-                    paste0("There is no file for the pair ", input$gene1, ' and ', input$gene2)),
+                 paste0("There is no file for the pair ", input$gene1, ' and ', input$gene2)),
             need(try(read.table(paste0(data_path, input$gene3,'_', input$gene4, file_suffix), sep='\t', header=FALSE)), 
                  paste0("There is no file for the pair ", input$gene3, ' and ', input$gene4))
         )
@@ -107,66 +107,51 @@ server <- function(input, output) {
         
         c(input$gene1, input$gene2, input$gene3, input$gene4)
     })
-
+    
     output$boxplots <- renderPlot({
         genes = get_genes()
         file1 = paste0(data_path, genes[1],'_', genes[2], file_suffix)
         file2 = paste0(data_path, genes[3],'_', genes[4], file_suffix)
         data1 <- read.table(file1, sep='\t', header=FALSE)
         abs_data1 = log2(abs(data1[3]))
-
+        
         data2 <- read.table(file2, sep='\t', header=FALSE)
-        abs_data2 = log2(abs(data2[3]))
-
-        # Replace -Inf caused by log-zero values
-        abs_data1[mapply(is.infinite, abs_data1)] = 0
-        abs_data2[mapply(is.infinite, abs_data2)] = 0
         
-        abs_data1['pair'] = paste0(genes[1],'_', genes[2])
-        abs_data2['pair'] = paste0(genes[3],'_', genes[4])
+        data1$pair = paste0(data1$V1,"_",data1$V2)
+        data2$pair = paste0(data2$V1,"_",data2$V2)
         
-        df_both = data.frame(matrix(ncol = 2, nrow = length(abs_data1) + length(abs_data2)))
-        
-        df_both = rbind(abs_data1, abs_data2)
-        
-        # Set same y limits to ease comparison
-        # lmts <- range(abs_data1, abs_data2)
-        # 
-        # par(mfrow = c(1, 2))
-        # boxplot(abs_data1, ylim=lmts, main = paste0(genes[1],'_', genes[2]))
-        # boxplot(abs_data2, ylim=lmts, main = paste0(genes[3],'_', genes[4]))
-
-        boxplot(V3~pair,data=df_both, main="Intersummit Distance Boxplots (log2)", ylab = 'log distance')
+        df_both = rbind(data1, data2)
+        colnames(df_both)[3]="distance"
+        df_both = df_both[,c(3,4)]
+        df_both$distance=abs(df_both$distance)
+        df_both$distance[mapply(is.infinite, df_both$distance)] = 0
+        qplot(pair, distance, data = df_both, 
+              geom=c("boxplot"), fill = pair,log="y")
     })
-
+    
     
     output$densityplots <- renderPlot({
         genes = get_genes_density()
         file1 = paste0(data_path, genes[1],'_', genes[2], file_suffix)
         file2 = paste0(data_path, genes[3],'_', genes[4], file_suffix)
         data1 <- read.table(file1, sep='\t', header=FALSE)
-        abs_data1 = log2(abs(data1[3]))
+        # abs_data1 = log2(abs(data1[3]))
+        abs_data1 = abs(data1[3])
         
         data2 <- read.table(file2, sep='\t', header=FALSE)
-        abs_data2 = log2(abs(data2[3]))
+        # abs_data2 = log2(abs(data2[3]))
+        data1$pair = paste0(data1$V1,"_",data1$V2)
+        data2$pair = paste0(data2$V1,"_",data2$V2)
         
-        # Replace -Inf caused by log-zero values
-        abs_data1[mapply(is.infinite, abs_data1)] = 0
-        abs_data2[mapply(is.infinite, abs_data2)] = 0
+        df_both = rbind(data1, data2)
+        colnames(df_both)[3]="distance"
+        df_both = df_both[,c(3,4)]
+        df_both$distance=abs(df_both$distance)
+        df_both$distance[mapply(is.infinite, df_both$distance)] = 0
         
-        # Set same y limits to ease comparison
-        #par(mfrow = c(1, 2))
+        options(scipen=10000)
         
-        d1 = density(unlist(abs_data1))
-        d2 = density(unlist(abs_data2))
-
-        plot(d1, main = "Intersummit Distance Density Plots (log2)", ylab = 'density',  ylim = c(0, 0.3))
-        lines(d2, ylab = 'density', col = "blue", ylim = c(0, 0.3))
-        legend("topleft",
-               legend=c(paste0(genes[1],'_', genes[2]), paste0(genes[3],'_', genes[4])), 
-                        pch = c(17,19),
-                        col=c("black", "blue")
-               )
+        qplot(distance, data = df_both, geom = "density", color = pair,y = ..scaled..,log="x")
     })
     
     output$stats1 <- renderPrint({
@@ -174,17 +159,17 @@ server <- function(input, output) {
         file1 = paste0(data_path, genes[1],'_', genes[2], file_suffix)
         data1 <- read.table(file1, sep='\t', header=FALSE)
         abs_data1 = log2(abs(data1[3]))
-
+        
         # Replace -Inf caused by log-zero values
         abs_data1[mapply(is.infinite, abs_data1)] = 0
-
+        
         paste0("log2 median intersummit distance between ", genes[1],' and ', genes[2], " is: ",median(unlist(abs_data1)))
-
+        
     })
     output$stats2 <- renderPrint({
         genes = get_genes_ks()
         file2 = paste0(data_path, genes[3],'_', genes[4], file_suffix)
-
+        
         data2 <- read.table(file2, sep='\t', header=FALSE)
         abs_data2 = log2(abs(data2[3]))
         
@@ -218,7 +203,7 @@ server <- function(input, output) {
         paste0("median for data1 is: ",median(unlist(abs_data1)))
         paste0("median for data2 is: ",median(unlist(abs_data2)))
         
-       
+        
         
         ks
     })
