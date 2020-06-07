@@ -13,6 +13,8 @@ This shiny app takes selected genes from the 709 transcription factors in Gene T
 
 This allows us to visualize and test if candidate transcription factors might be cofactors that work together based on the proximity of binding sites on the genome. Studies have found many transcription factors play coordinated role during embryo development and cell fate determination. For example, transcription factor Sp5 has been observed to have very close binding sites to transcription factor Oct4. 
 
+The boxplot and density plot shows experimental group (distribution of inter-summit distances between transcription factor A and B) as well as control group (distribution of inter-summit distances between transcription factor A and its all possible pairs plus distances between transcription factor B and its all possible pairs. So a total of ~1400 pairs, this serves as a background, or null expectation)
+
 
 Usage
 -----------
