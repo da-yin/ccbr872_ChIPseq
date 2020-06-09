@@ -19,7 +19,7 @@ The boxplot and density plot shows experimental group (distribution of inter-sum
 Usage
 -----------
 
-- Example datasets is in /rawdata/*.intersummit_distance.txt files. 
+- Example datasets are *.intersummit_distance.txt files. 
 - Complete datasets (290,000 files) at biowulf.nih.gov:/data/CCBR_Pipeliner/db/PipeDB/db/GTRD/
 - Input
   - Pair 1:
