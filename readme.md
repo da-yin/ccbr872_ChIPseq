@@ -34,3 +34,30 @@ Usage
   - statistical test (Kolmogorov–Smirnov test, is a nonparametric test of the equality of one-dimensional probability distributions)
 
 ![workflow chart](https://github.com/da-yin/ccbr872_ChIPseq/blob/master/UI3_edited.png)
+
+Usage on biowulf
+-----------
+
+ssh -Y username@biowulf.nih.gov # log on to biowulf HPC
+
+sinteractive --tunnel # create a interactive job and use tunnel to connect to desktop
+
+echo $PORT1 # find out the tunnel number
+46844
+
+module load R/3.6.1 # load R into biowulf
+
+Open a new shell on desktop and create a tunnel from your computer to biowulf using the command directed when you ran sinteractive. In this example, it was
+
+ssh -L 46844:localhost:46844  biowulf.nih.gov
+
+change shiny app script interSummit_3.0.R shiny.port argument to the tunnel number, in this case:
+
+options(shiny.port=46844)
+
+Rscript interSummit_3.0.R # call the shiny app
+
+copy the url to a browser to view the app:
+http://127.0.0.1:46844
+
+
